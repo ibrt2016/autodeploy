@@ -1,0 +1,113 @@
+# -------------------------
+# Python
+# -------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# Packaging
+build/
+dist/
+*.egg-info/
+*.egg
+.eggs/
+
+# Unit test / coverage
+.coverage
+coverage.xml
+htmlcov/
+.tox/
+.nox/
+pytest_cache/
+.pytest_cache/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Byte-compiled files
+*.pyo
+*.pyd
+
+# Tools
+.mypy_cache/
+.dmypy.json
+.pyre/
+.pytype/
+
+# Logs
+*.log
+logs/
+jobs/*/logs/
+
+# -------------------------
+# Terraform
+# -------------------------
+**/.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+
+# Sensitive Terraform files
+**/terraform.tfvars
+**/ssh_key
+**/ssh_key.pub
+
+# Terraform temporary files
+crash.log
+override.tf
+override.tf.json
+*.auto.tfvars
+
+# -------------------------
+# Jobs / Generated Folders
+# -------------------------
+jobs/*/terraform/
+jobs/*/ssh_key
+jobs/*/ssh_key.pub
+
+# Don't ignore job templates
+!jobs/template/
+
+# -------------------------
+# OS / Editor / IDE
+# -------------------------
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Linux
+*~
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# -------------------------
+# Node (if project includes Node apps)
+# -------------------------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# -------------------------
+# Misc
+# -------------------------
+*.bak
+*.tmp
+*.temp
