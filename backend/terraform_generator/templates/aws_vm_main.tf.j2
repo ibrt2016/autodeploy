@@ -1,0 +1,99 @@
+terraform {
+  required_providers {
+    aws = {
+      source = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+}
+
+provider "aws" {
+  region = "{{ region }}"
+}
+
+resource "tls_private_key" "vm_key" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
+resource "local_file" "private_key" {
+  filename = "{{ ssh_key_path }}"
+  content  = tls_private_key.vm_key.private_key_pem
+  file_permission = "0600"
+  depends_on      = [tls_private_key.vm_key]
+}
+
+resource "aws_key_pair" "vm_keypair" {
+  key_name   = "autodeploy_key_${var.job_id}"
+  public_key = tls_private_key.vm_key.public_key_openssh
+}
+
+
+resource "aws_instance" "autodeploy_vm" {
+  ami           = "ami-08c40ec9ead489470" # Amazon Linux 2 AMI (us-east-1)
+  instance_type = "{{ instance_type }}"
+  key_name = aws_key_pair.vm_keypair.key_name
+
+  tags = {
+    Name = "autodeploy-${var.job_id}"
+  }
+
+  # Open inbound port
+  vpc_security_group_ids = [aws_security_group.autodeploy_sg.id]
+
+  # User data script (runs on boot)
+  user_data = <<EOF
+#!/bin/bash
+apt update -y
+EOF
+}
+
+resource "aws_security_group" "autodeploy_sg" {
+  name        = "autodeploy-sg-${var.job_id}"
+  description = "Allow inbound access to app"
+
+  ingress {
+    from_port   = {{ port }}
+    to_port     = {{ port }}
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+output "public_ip" {
+  value = aws_instance.autodeploy_vm.public_ip
+}
+
+output "ssh_private_key" {
+  value = var.ssh_key_path
+}
+
+
+variable "job_id" {
+  type = string
+  default = "{{ job_id }}"
+}
+
+variable "ssh_key_path" {
+  type = string
+  default = "{{ ssh_key_path }}"
+}
+
+variable "instance_type" {
+  type    = string
+  default = "t2.micro"
+}
