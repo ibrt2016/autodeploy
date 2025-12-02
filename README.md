@@ -302,25 +302,3 @@ sudo grep -R "localhost" /home/ubuntu/app
 MIT License
 
 ---
-
-# 🤝 Contributing
-
-PRs welcome!  
-Planned features:
-
-- Kubernetes support  
-- Docker image builds  
-- Serverless deployment  
-- Buildpacks  
-- Deploy keys for private repos  
-
----
-
-# 🎥 Demo Video
-
-Record a 1-minute Loom video demonstrating:
-
-- Running the CLI  
-- Seeing logs  
-- Opening the deployed app  
-
